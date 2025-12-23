@@ -108,17 +108,23 @@ app.put('/targets/:id', async (req, res) => {
     res.status(404).send(`target num: ${id} is not found`)
 })
 
-
-
-
-
-
-
-
-
-
-
-
+app.delete('/targets/:id', async (req, res) => {
+    let targets = await readFile(fileName)
+    const originalDataLength = targets.length 
+    const {id} = req.params
+    targets = targets.filter((target) => {
+        if (!(target.id === id)){
+            return true
+        }
+    })
+    const newDataLength = targets.length
+    if (originalDataLength != newDataLength){
+        await writeFile(fileName, targets)
+        return res.status(200).send(`target num: ${id} deleted successfully`)
+    }else{
+        res.status(404).send(`target num: ${id} is not found`)
+    }
+})
 
 app.listen(3030, () => {
     console.log(`server run....`);
